@@ -1,0 +1,23 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Charlotte Wang</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="" href="{% static 'custom.css' %}">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <link rel="icon" href="{% static 'img/prof_pic.jpg'%}">
+  </head>
+
+  <body>
+	{% include 'navbar.html' %}
+    <div class="container-md mt-5">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+</html>

@@ -4,7 +4,7 @@ from django.core.files.storage import FileSystemStorage
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 import face_recognition
-from .models import User, Encoding, Image
+from main.models import User, Encoding, Image
 
 
 def upload(request):
@@ -12,8 +12,8 @@ def upload(request):
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
         fs = FileSystemStorage()
-        name = fs.save(uploaded_file.name, uploaded_file)
-        context['url'] = fs.url(name)
+        filename = fs.save(uploaded_file.name, uploaded_file)
+        context['url'] = fs.url(filename)
     return render(request, 'upload.html', context)
 
 def image_processing(image_url):

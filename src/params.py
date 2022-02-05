@@ -2,5 +2,5 @@ USRDIR = "users/"
 PICDIR = "pictures/"
 OUTDIR = "output/"
 
-PICTURE = "picture5.jpg"
+PICTURE = "picture8.jpg"
 USRANON = "unknown_unknown"

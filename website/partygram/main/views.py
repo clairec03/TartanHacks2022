@@ -8,12 +8,26 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 import face_recognition
 from main.models import Profile, Encoding, Image
+from django.contrib.auth import login, authenticate, logout
 
-
-class signup(generic.CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'registration/signup.html'
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            new_profile = Profile(user=user)
+            new_profile.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
+    # form_class = UserCreationForm
+    # success_url = reverse_lazy('login')
+    # template_name = 'registration/signup.html'
 
 @login_required
 def upload(request):
@@ -23,8 +37,15 @@ def upload(request):
         image_upload(uploaded_file)
     return render(request, 'upload.html', context)
 
+@login_required
+def prof_pic_upload(request):
+    user_m = request.user
+    context = {}
+    if request.method == 'POST':
+        uploaded_file = request.FILES['document']
+        user_m.profile.pfp = uploaded_file
 
-def prof_pic_upload(user, image_url):
+    return render(request, 'home.html', context)
     encoding = get_encoding(image_url)
     encoding_obj = Encoding.objects.create_encoding(encoding, user)
 

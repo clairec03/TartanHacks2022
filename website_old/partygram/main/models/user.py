@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 import numpy
-from website.partygram.partygram.settings import AUTH_USER_MODEL
 
 # Create your models here.
 class CustomEncodingManager(models.Manager):
@@ -20,7 +19,7 @@ class User(AbstractUser):
 
 class Encoding(models.Model):
     serialized_encoding = models.JSONField()
-    person = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+    person = models.ForeignKey(User, on_delete=models.CASCADE)
     objects = CustomEncodingManager()
     def get_numpy_array(self):
         return numpy.array(self.serialized_encoding)

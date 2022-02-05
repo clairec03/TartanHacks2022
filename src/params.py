@@ -1,4 +1,6 @@
 USRDIR = "users/"
 PICDIR = "pictures/"
-PICTURE = "picture2.jpg"
 OUTDIR = "output/"
+# SUNGLASSES, CLOWN, LIP_COLOR
+
+PICTURE = "picture2.jpg"

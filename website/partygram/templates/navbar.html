@@ -1,0 +1,36 @@
+{% url 'home' as home_url %}
+{% url 'upload' as upload_url %}
+{% url 'profile' as profile_url %}
+
+  <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+      <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home'%}">SnapSync</a>
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item {% if request.path == home_url %} active {%endif%}">
+          <a class="nav-link " href="{% url 'home'%}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item {% if request.path == upload_url%} active {%endif%}">
+            <a class="nav-link " href="{% url 'upload'%}">Upload</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item {% if request.path == pr_url%} active {%endif%}">
+            <a class="nav-link " href="{% url 'upload'%}">Profile</a>
+        </li>
+        <li class="nav-item ">
+            {% if user.is_authenticated %} 
+            <form method="post"  action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="btn btn-light">Log Out</button>
+              </form>
+            {% else %}
+            <form method="post"  action="{% url 'login' %}">
+                {% csrf_token %}
+                <button class="btn btn-light">Log In</button>
+              </form>
+            {% endif %} 
+        </li>
+    </ul>
+</div>
+  </nav>
+

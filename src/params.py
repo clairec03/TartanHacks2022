@@ -1,2 +1,3 @@
-PICTURE = "pictures/picture6.jpg"
-ROOTDIR = "faces/"
+USRDIR = "users/"
+PICDIR = "pictures/"
+PICTURE = "picture2.jpg"

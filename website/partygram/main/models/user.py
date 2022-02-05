@@ -19,8 +19,7 @@ class User(models.Model):
 
 class Encoding(models.Model):
     serialized_encoding = models.JSONField()
-    person = models.ForeignKey(User)
+    person = models.ForeignKey(User, on_delete=models.CASCADE)
     objects = CustomEncodingManager()
-
     def get_numpy_array(self):
         return numpy.array(self.serialized_encoding)

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 import face_recognition
 from .models import User, Encoding, Image
 
-@login_required
+
 def upload(request):
     context = {}
     if request.method == 'POST':

@@ -1,6 +1,7 @@
 USRDIR = "users/"
 PICDIR = "pictures/"
 OUTDIR = "output/"
-# SUNGLASSES, CLOWN, LIP_COLOR
+# List of bool flags for filters
+# isSunglasses, isClown, isLipColor, isEyeLiner, isEyeSparkle
 
-PICTURE = "picture2.jpg"
+PICTURE = "picture4.jpg"

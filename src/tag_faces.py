@@ -22,14 +22,14 @@ for face_location in face_locations:
     face_image = picture[top:bottom, left:right]
     pil_image = Image.fromarray(face_image)
     pil_image.show()
-    print(PICTURE)
     for file in os.listdir(rootdir):
         print(file)
-        d = os.path.join(rootdir, file)
-        known_image = face_recognition.load_image_file(f"{file}/init.jpg")
-        unknown_image = face_recognition.load_image_file(f"{PICTURE}")
-        known_encoding = face_recognition.face_encodings(known_image)[0]
-        unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
-        results = face_recognition.compare_faces([known_encoding], unknown_encoding)
-        if os.path.isdir(d) and result[0]:
-            print(f"Face matched! Image features {face_location} who is {file}")
+        if not file == ".DS_Store":
+            d = os.path.join(rootdir, file)
+            known_image = face_recognition.load_image_file(f"{ROOTDIR}{file}/init.jpg")
+            unknown_image = face_recognition.load_image_file(f"{PICTURE}")
+            known_encoding = face_recognition.face_encodings(known_image)[0]
+            unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
+            results = face_recognition.compare_faces([known_encoding], unknown_encoding)
+            if os.path.isdir(d) and results[0]:
+                print(f"Face matched! Image features {face_location} who is {file}")

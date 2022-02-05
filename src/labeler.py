@@ -1,16 +1,17 @@
 from PIL import Image, ImageDraw
-from tag_faces import *
 from params import *
+from tagger import *
 
-with Image.open(f"{PICDIR}{PICTURE}") as im:
-    for uname in matches:
-        for pic_coords in matches[uname]:
-            pic = pic_coords[0]
-            if PICTURE == pic:
-                coords = pic_coords[1]
-                (x0, x1) = (coords[3], coords[1])
-                (y0, y1) = (coords[0], coords[2])
-            
+if __name__ == "__main__":
+    picture = PICDIR + PICTURE
+    tagger = Tagger(picture)
+    tagger.tag()
+    users = tagger.getUsers()
+    print(users)
+    with Image.open(picture) as im:
+        for user in users:
+            for location in tagger.getLocations(user):
+                y0, x1, y1, x0 = location
                 draw = ImageDraw.Draw(im, 'RGBA')
                 # (x0, y0, x1, y1)
                 draw.line([(x0, y0), (x1, y0)], fill=(93, 249, 7, 227)) # Upper horizontal line
@@ -18,11 +19,11 @@ with Image.open(f"{PICDIR}{PICTURE}") as im:
                 draw.line([(x0, y0), (x0, y1)], fill=(93, 249, 7, 227)) # Left vertical line
                 draw.line([(x1, y0), (x1, y1)], fill=(93, 249, 7, 227)) # Right vertical line
                 display_name = ""
-                for string in uname.split("_"):
+                for string in user.split("_"):
                     first_char = string[0].upper()
                     rem_chars = string[1:]
                     display_name += first_char
                     display_name += rem_chars
                     display_name += " "
                 draw.text((x0, y1 + 10), display_name, fill=(93, 249, 7, 227), anchor="mm") # Displays name
-                im.save(f"{OUTDIR}tagged_{PICTURE}")
+        im.save(OUTDIR + PICTURE)

@@ -1,0 +1,27 @@
+{% comment %} {% url 'home' as home_url %}
+{% url 'projects' as projects_url %}
+{% url 'bloglist' as blogs_url %}
+{% url 'resume' as resume_url %}
+{% url 'specblog' as blog_url %} {% endcomment %}
+
+  <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+    <a class="navbar-brand" href="{% url 'home'%}">PartyGram</a>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item {% if request.path == home_url %} active {%endif%}">
+          <a class="nav-link " href="{% url 'home'%}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        {% comment %} <li class="nav-item {% if request.path == projects_url %} active {%endif%}">
+          <a class="nav-link" href="{% url 'projects'%}">Projects</a>
+        </li> {% endcomment %}
+        <li class="nav-item ">
+          <a class="nav-link ">Upload</a>
+        </li>
+        <li class="nav-item ">
+            <a class="nav-link ">Images</a>
+          </li>
+        {% comment %} <li class="nav-item {% if request.path == resume_url %} active {%endif%}">
+          <a class="nav-link" href="{% url 'resume'%}">Resume</a>
+        </li> {% endcomment %}
+      </ul>
+  </nav>
+

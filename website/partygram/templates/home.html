@@ -9,7 +9,14 @@
   <form method="post" enctype="multipart/form-data" action="{% url 'uploadpfp' %}">
     {% csrf_token %}
     <input type="file" name="document">
-    <button type="submit">Upload</button>
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+
+  Upload the image you wnat to share:
+  <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
+    {% csrf_token %}
+    <input type="file" name="document">
+    <button type="submit" class="btn btn-primary">Upload</button>
   </form>
   <p><a href="{% url 'logout' %}">Log Out</a></p>
   {% comment %} <p><a href="{% url 'password_reset' %}">Reset Password</a></p> {% endcomment %}

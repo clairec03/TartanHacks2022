@@ -41,7 +41,7 @@ def upload(request):
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
         image_upload(uploaded_file)
-    return render(request, 'upload.html', context)
+    return render(request, 'home.html', context)
 
 @login_required
 def prof_pic_upload(request):
@@ -59,7 +59,6 @@ def prof_pic_upload(request):
         encoding.save()
 
 
-
     return render(request, 'home.html', context)
 
 
@@ -67,11 +66,11 @@ def image_upload(image_file):
     picture = face_recognition.load_image_file(image_file)
     face_locations = face_recognition.face_locations(
             picture,
-            number_of_times_to_upsample=1,
-            model="cnn"
+            number_of_times_to_upsample=1
     )
 
-    res = []
+    image = Image(image_file = image_file)
+    image.save()
 
     for face_location in face_locations:
         top, right, bottom, left = face_location
@@ -82,19 +81,22 @@ def image_upload(image_file):
         encoding = encoding[0]
 
         #  Image.fromarray(face).show()
-        users = User.objects.all()
+        profiles = Profile.objects.all()
         
-        for user in users:
-            user_encodings = Encoding.objects.filter(User__id=user.id)
+        for profile in profiles:
+            user_encodings = Encoding.objects.filter(user=profile)
             if len(user_encodings) == 0:
                 continue
-            user_encoding = user_encodings[0].get_numpy_array
+            user_encoding = user_encodings[0].get_numpy_array()
             result = face_recognition.compare_faces([encoding], user_encoding)
             if result[0]:
-                res.append(user)
-                print(user.name)
+                image.people.add(profile)
+                logging.warning(profile.user.username)
                 # Image.fromarray(face).show()
                 # Image.fromarray(user_face).show()
+    
+    
+    image.save()
 
 def get_encoding(img_url):
     picture = face_recognition.load_image_file(img_url)

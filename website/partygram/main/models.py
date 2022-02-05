@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 import uuid
 from django.conf import settings
 import os
+import json
+import numpy as np
 
 # from website.partygram.main.views import upload
 
@@ -19,6 +21,10 @@ class Encoding(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     serialized_encoding = models.JSONField()
 
+    def get_numpy_array(self):
+        return np.array(json.loads(self.serialized_encoding))
+
+
 class Image(models.Model):
-    img = models.ImageField(upload_to = 'uploads/pictures')
+    image_file = models.ImageField(upload_to = 'uploads/images')
     people = models.ManyToManyField(Profile)

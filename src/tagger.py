@@ -8,8 +8,9 @@ class Tagger:
     def __init__(self, picture_path):
         self._picture = face_recognition.load_image_file(picture_path)
         self._data = {USRANON : []}
+        self._tag()
 
-    def tag(self):
+    def _tag(self):
         locations = face_recognition.face_locations(self._picture, number_of_times_to_upsample=1, model="cnn")
         landmarks = face_recognition.face_landmarks(self._picture, locations, model="large")
         encodings = face_recognition.face_encodings(self._picture, locations, num_jitters=10, model="large")

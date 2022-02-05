@@ -5,7 +5,6 @@ from tagger import *
 if __name__ == "__main__":
     picture = PICDIR + PICTURE
     tagger = Tagger(picture)
-    tagger.tag()
     users = tagger.getUsers()
     print(users)
     with Image.open(picture) as im:

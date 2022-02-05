@@ -16,7 +16,12 @@ def upload(request):
         context['url'] = fs.url(filename)
     return render(request, 'upload.html', context)
 
-def image_processing(image_url):
+@login_required
+def prof_pic_upload(user, image_url):
+    encoding = get_encoding(image_url)
+    encoding_obj = Encoding.objects.create_encoding(encoding, user)
+
+def image_upload(image_url):
     picture = face_recognition.load_image_file(image_url)
     face_locations = face_recognition.face_locations(
             picture,
@@ -36,14 +41,31 @@ def image_processing(image_url):
         users = User.objects.all()
         
         for user in users:
-            user_encodings = Encoding.objects.filter(reporter__first_name='John')
-            if len(user_encoding) == 0:
+            user_encodings = Encoding.objects.filter(User__id=user.id)
+            if len(user_encodings) == 0:
                 continue
-            user_encoding = user_encoding[0]
+            user_encoding = user_encodings[0].get_numpy_array
             result = face_recognition.compare_faces([encoding], user_encoding)
             if result[0]:
-                print(user)
-                Image.fromarray(face).show()
-                Image.fromarray(user_face).show()
+                print(user.name)
+                # Image.fromarray(face).show()
+                # Image.fromarray(user_face).show()
+
+def get_encoding(image_url):
+    picture = face_recognition.load_image_file(image_url)
+    face_location = face_recognition.face_locations(
+            picture,
+            number_of_times_to_upsample=1,
+            model="cnn"
+    )[0]
+    top, right, bottom, left = face_location
+    face = picture[top:bottom, left:right]
+    encoding = face_recognition.face_encodings(face)
+    if len(encoding) <= 0:
+        return None
+    else:
+        return encoding[0]
+    
+
     
 

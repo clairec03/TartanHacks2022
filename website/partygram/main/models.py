@@ -1,6 +1,8 @@
 from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
+
 
 # from website.partygram.main.views import upload
 
@@ -8,13 +10,13 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    id = models.AutoField(primary_key=True)
-    pfp = models.ImageField(upload_to = "uploads/pictures", default=None)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    pfp = models.ImageField(upload_to = "uploads/pictures/", default=None)
 
 
 class Encoding(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     serialized_encoding = models.JSONField()
-    person = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
 class Image(models.Model):
     img = models.ImageField(upload_to = 'uploads/pictures')

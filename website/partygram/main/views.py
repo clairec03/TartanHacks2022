@@ -1,3 +1,4 @@
+import encodings
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
@@ -10,7 +11,8 @@ import face_recognition
 from main.models import Profile, Encoding, Image
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
-
+import numpy as np
+import json
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -45,16 +47,17 @@ def prof_pic_upload(request):
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
         profile = Profile.objects.get(user=user_m)
-        if(profile == None):
-            profile = Profile(user=user_m)
-        
         profile.pfp = uploaded_file
         profile.save()
+        npencoding = get_encoding(img = uploaded_file)
+        json_encoding = json.dumps(npencoding.tolist())
+        encoding = Encoding(user_m, json_encoding)
+        encoding.save()
+
 
 
     return render(request, 'home.html', context)
-    encoding = get_encoding(image_url)
-    encoding_obj = Encoding.objects.create_encoding(encoding, user)
+
 
 def image_upload(image_file):
     picture = face_recognition.load_image_file(image_file)
@@ -89,8 +92,8 @@ def image_upload(image_file):
                 # Image.fromarray(face).show()
                 # Image.fromarray(user_face).show()
 
-def get_encoding(image_url):
-    picture = face_recognition.load_image_file(image_url)
+def get_encoding(img):
+    picture = face_recognition.load_image_file(img)
     face_location = face_recognition.face_locations(
             picture,
             number_of_times_to_upsample=1,

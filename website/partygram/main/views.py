@@ -27,7 +27,7 @@ def signup(request):
             new_profile = Profile(user=user)
             new_profile.save()
             login(request, user)
-            return redirect('home')
+            return redirect('home') 
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})

@@ -7,8 +7,8 @@ import face_recognition
 # List of bool flags for filters
 # isSunglasses, isClown, isLipColor, isEyeLiner, isEyeSparkle
 
-pref = {"isSunglasses": True, 
-        "isClown": True,
+pref = {"isSunglasses": False, 
+        "isClown": False,
         "isLipColor": True,
         "isEyeLiner": True,
         "isEyeSparkle": True,

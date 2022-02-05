@@ -4,7 +4,7 @@ from django.core.files.storage import FileSystemStorage
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 
-@login_required
+
 def upload(request):
     context = {}
     if request.method == 'POST':

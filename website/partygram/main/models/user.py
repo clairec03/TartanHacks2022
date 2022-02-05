@@ -2,7 +2,7 @@ from django.db import models
 import numpy
 
 # Create your models here.
-class CustomEncodingManager(BaseEncodingManager):
+class CustomEncodingManager(models.Manager):
     def create_encoding(self, encoding_obj):
         encoding_list = numpy.ndarray.tolist(encoding_obj)
         encoding = self.model(serialized_encoding = encoding_list)
@@ -15,4 +15,4 @@ class User(models.Model):
 
 class Encoding(models.Model):
     serialized_encoding = models.JSONField()
-    person = models.ForeignKey(User)
+    person = models.ForeignKey(User, on_delete=models.CASCADE)

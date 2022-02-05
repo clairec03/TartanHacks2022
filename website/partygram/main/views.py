@@ -12,7 +12,9 @@ from main.models import Profile, Encoding, Image
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 import numpy as np
-import json
+import json, logging
+from django.conf import settings
+import os
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -21,6 +23,7 @@ def signup(request):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
+            user.is_admin = True
             new_profile = Profile(user=user)
             new_profile.save()
             login(request, user)
@@ -49,9 +52,10 @@ def prof_pic_upload(request):
         profile = Profile.objects.get(user=user_m)
         profile.pfp = uploaded_file
         profile.save()
-        npencoding = get_encoding(img = uploaded_file)
+        logging.warning(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".." + profile.pfp.url))
+        npencoding = get_encoding(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".." + profile.pfp.url))
         json_encoding = json.dumps(npencoding.tolist())
-        encoding = Encoding(user_m, json_encoding)
+        encoding = Encoding(user = profile, serialized_encoding=json_encoding)
         encoding.save()
 
 
@@ -92,8 +96,9 @@ def image_upload(image_file):
                 # Image.fromarray(face).show()
                 # Image.fromarray(user_face).show()
 
-def get_encoding(img):
-    picture = face_recognition.load_image_file(img)
+def get_encoding(img_url):
+    picture = face_recognition.load_image_file(img_url)
+    logging.warning("read picture done")
     face_location = face_recognition.face_locations(
             picture,
             number_of_times_to_upsample=1,
@@ -102,6 +107,7 @@ def get_encoding(img):
     top, right, bottom, left = face_location
     face = picture[top:bottom, left:right]
     encoding = face_recognition.face_encodings(face)
+    logging.warning(encoding)
     if len(encoding) <= 0:
         return None
     else:

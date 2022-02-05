@@ -2,7 +2,8 @@ from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
-
+from django.conf import settings
+import os
 
 # from website.partygram.main.views import upload
 

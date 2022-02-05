@@ -1,6 +1,17 @@
 from PIL import ImageDraw
-from tagger import *
+from params import *
 
+
+def drawLabel(image, location, user=None):
+    top, right, bottom, left = location
+    mid = left + (right - left) / 2
+    draw = ImageDraw.Draw(image, 'RGBA')
+    draw.polygon([(left, top), (left, bottom), (right, bottom), (right, top)],
+            width=3, outline=(0, 255, 0, 255))
+    if user is not None:
+        assert "_" in user
+        draw.text((mid, bottom), ' '.join(name.capitalize() for name in user.split('_')),
+                anchor="ma", font=TEXTFONT, fill=(0, 255, 0, 255))
 
 def drawEyebrows(image, landmark):
     draw = ImageDraw.Draw(image, 'RGBA')
@@ -37,7 +48,6 @@ def drawClownNose(image, landmark):
             max_x = curr_x
         if curr_y > max_y:
             max_y = curr_y
-    print(min_x, min_y, max_x, max_y)
     cx = int((min_x + max_x) / 2)
     cy = int((min_y + max_y) / 2)
     d = abs(max_x - min_x) * 1.5

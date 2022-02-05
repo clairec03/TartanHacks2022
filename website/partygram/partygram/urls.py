@@ -1,7 +1,7 @@
 """partygram URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
+    https://docs.djangoproject.com/en/4.0/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -14,8 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from main import views
+from django.views.generic.base import TemplateView
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
+    path('accounts/signup', views.signup, name = "signup"),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('upload/', views.upload, name = "upload"),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('uploadpfp', views.prof_pic_upload, name="uploadpfp")
+] +static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# path('accounts/login', views.signup.as_view(), name = "login"),

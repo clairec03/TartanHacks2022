@@ -1,5 +1,5 @@
 from PIL import Image, ImageDraw
-from tag_faces import *
+from tagger import *
 from params import *
 import face_recognition
 
@@ -35,8 +35,8 @@ for face_landmarks in face_landmarks_list:
         draw.polygon(face_landmarks['right_eye'], fill=(255, 255, 255, 30))
 
     if pref["isEyeLiner"]:
-        draw.line(face_landmarks['left_eye'] + [face_landmarks['left_eye'][0]], fill=(0, 0, 0, 110), width=1)
-        draw.line(face_landmarks['right_eye'] + [face_landmarks['right_eye'][0]], fill=(0, 0, 0, 110), width=1)
+        draw.line(face_landmarks['left_eye'][0:int(len(face_landmarks['left_eye'])/1.5)], fill=(0, 0, 0, 110), width=2)
+        draw.line(face_landmarks['right_eye'][0:int(len(face_landmarks['right_eye'])/1.5)], fill=(0, 0, 0, 110), width=2)
     
     if pref["isClown"]:
         img_nose = Image.open('img_components/clown_nose.png')
@@ -58,9 +58,25 @@ for face_landmarks in face_landmarks_list:
         nose_coords = (int(cx / counter), int(cy / counter))
         cx = int((min_x + max_x) / 2)
         cy = int((min_y + max_y) / 2)
-        r = abs(max_x - min_x)
+        d = abs(max_x - min_x)
+        draw.ellipse((min_x, cy - .5 * d, max_x, cy + .5 * d), fill=(255, 0, 0), outline=(0, 0, 0, 255), width=0)
 
-        draw.ellipse((min_x, cy - .5 * r, max_x, cy + .5 * r), fill=(255, 0, 0), outline=(0, 0, 0, 255), width=0)
+    if pref["isSunglasses"]:
+        smol_x, lorge_x = (face_landmarks['left_eye'][0][0] + face_landmarks['left_eyebrow'][0][0]) / 2, (face_landmarks['left_eye'][int(len(face_landmarks['left_eye'])/1.5)][0] + face_landmarks['left_eyebrow'][int(len(face_landmarks['left_eyebrow'])/1.5)][0]) / 2
+        smol_y, lorge_y = face_landmarks['left_eye'][0][1], face_landmarks['left_eye'][int(len(face_landmarks['left_eye'])/1.5)][1]
+        avg_x = (smol_x + lorge_x) / 2
+        avg_y = (smol_y + lorge_y) / 2
+        r = (lorge_x - smol_x) / 1.1
+        draw.ellipse((avg_x - r, avg_y - r, avg_x + r, avg_y + r), fill=(60, 60, 60, 128), outline=(70, 70, 70, 255), width=1)
 
-    pil_image.show()
+        smol_x, lorge_x = (face_landmarks['right_eye'][0][0] + face_landmarks['right_eyebrow'][0][0]) / 2, (face_landmarks['right_eye'][int(len(face_landmarks['right_eye'])/1.5)][0] + face_landmarks['right_eyebrow'][int(len(face_landmarks['right_eyebrow'])/1.5)][0]) / 2
+        smol_y, lorge_y = face_landmarks['right_eye'][0][1], face_landmarks['right_eye'][int(len(face_landmarks['right_eye'])/1.5)][1]
+        avg_x = (smol_x + lorge_x) / 2
+        avg_y = (smol_y + lorge_y) / 2
+        r = (lorge_x - smol_x) / 1.1
+        draw.ellipse((avg_x - r, avg_y - r, avg_x + r, avg_y + r), fill=(60, 60, 60, 128), outline=(70, 70, 70, 255), width=1)
+
     pil_image.save(f"{OUTDIR}beautified_{PICTURE}")
+
+res = Image.open(f"{OUTDIR}beautified_{PICTURE}")
+res.show()

@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw
 from params import *
 from tagger import *
 
+
 if __name__ == "__main__":
     picture = PICDIR + PICTURE
     tagger = Tagger(picture)

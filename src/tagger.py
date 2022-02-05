@@ -41,8 +41,3 @@ class Tagger:
 
     def getLandmarks(self, user):
         return [landmark for _, landmark in self._data[user]]
-
-
-if __name__ == "__main__":
-    tagger = Tagger(PICDIR + PICTURE)
-    tagger.tag()

@@ -16,8 +16,8 @@ with Image.open(f"{PICDIR}{PICTURE}") as im:
             
                 draw = ImageDraw.Draw(im, 'RGBA')
                 # (x0, y0, x1, y1)
-                draw.line([(x0, y0), (x1, y0)], fill=(93, 249, 7, 0.8)) # Upper horizontal line
-                draw.line([(x0, y1), (x1, y1)], fill=(93, 249, 7, 0.8)) # Lower horizontal line
-                draw.line([(x0, y0), (x0, y1)], fill=(93, 249, 7, 0.8)) # Left vertical line
-                draw.line([(x1, y0), (x1, y1)], fill=(93, 249, 7, 0.8)) # Right vertical line
+                draw.line([(x0, y0), (x1, y0)], fill=(93, 249, 7, 227)) # Upper horizontal line
+                draw.line([(x0, y1), (x1, y1)], fill=(93, 249, 7, 227)) # Lower horizontal line
+                draw.line([(x0, y0), (x0, y1)], fill=(93, 249, 7, 227)) # Left vertical line
+                draw.line([(x1, y0), (x1, y1)], fill=(93, 249, 7, 227)) # Right vertical line
                 im.save(f"{OUTDIR}tagged_{PICTURE}")

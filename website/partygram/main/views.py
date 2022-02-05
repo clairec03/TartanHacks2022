@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 import face_recognition
 from main.models import Profile, Encoding, Image
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.models import User
 
 def signup(request):
     if request.method == 'POST':
@@ -43,7 +44,13 @@ def prof_pic_upload(request):
     context = {}
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
-        user_m.profile.pfp = uploaded_file
+        profile = Profile.objects.get(user=user_m)
+        if(profile == None):
+            profile = Profile(user=user_m)
+        
+        profile.pfp = uploaded_file
+        profile.save()
+
 
     return render(request, 'home.html', context)
     encoding = get_encoding(image_url)

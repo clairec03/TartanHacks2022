@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     id = models.AutoField(primary_key=True)
-    pfp = models.ImageField(upload_to = str(id), default=None)
+    pfp = models.ImageField(upload_to = "uploads/pictures", default=None)
 
 
 class Encoding(models.Model):

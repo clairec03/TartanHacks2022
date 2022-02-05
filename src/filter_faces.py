@@ -3,6 +3,7 @@ from tagger import *
 from params import *
 import face_recognition
 
+
 # List of bool flags for filters
 # isSunglasses, isClown, isLipColor, isEyeLiner, isEyeSparkle
 

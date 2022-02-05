@@ -7,7 +7,6 @@ def toDisplayName(user):
     assert '_' in user
     return ' '.join(name.capitalize() for name in user.split('_'))
 
-
 if __name__ == "__main__":
     picture = PICDIR + PICTURE
     tagger = Tagger(picture)

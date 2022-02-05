@@ -1,36 +1,36 @@
 from PIL import Image
-from params import *
 import face_recognition
 import os
+from params import *
 
 
-picture = face_recognition.load_image_file(PICTURE)
-rootdir = ROOTDIR
-
+picture = face_recognition.load_image_file(PICDIR + PICTURE)
 face_locations = face_recognition.face_locations(
         picture,
-        number_of_times_to_upsample=0,
+        number_of_times_to_upsample=1,
         model="cnn"
         )
 
-print(len(face_locations))
-
-result = dict()
-# (image file name, face_location)
-
 for face_location in face_locations:
     top, right, bottom, left = face_location
-    unknown_image = picture[top:bottom, left:right]
-    pil_image = Image.fromarray(unknown_image)
-    pil_image.show()
-    for file in os.listdir(rootdir):
-        if not file == ".DS_Store":
-            d = os.path.join(rootdir, file)
-            known_image = face_recognition.load_image_file(f"{ROOTDIR}{file}/init.jpg")
-            known_encoding = face_recognition.face_encodings(known_image)[0]
-            unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
-            results = face_recognition.compare_faces(known_encoding, unknown_encoding)
-            if os.path.isdir(d) and results[0]:
-                print(f"Face matched! Image features {face_location} who is {file}")
-                # if (PICTURE, face_location) not in result:
-                result[(PICTURE, face_location)] = file
+    face = picture[top:bottom, left:right]
+    encoding = face_recognition.face_encodings(face)
+    if len(encoding) == 0:
+        continue
+    encoding = encoding[0]
+
+    #  Image.fromarray(face).show()
+    
+    for user in os.listdir(USRDIR):
+        if user == ".DS_Store":
+            continue
+        user_face = face_recognition.load_image_file(os.path.join(USRDIR, user) + "/init.jpg")
+        user_encoding = face_recognition.face_encodings(user_face)
+        if len(user_encoding) == 0:
+            continue
+        user_encoding = user_encoding[0]
+        result = face_recognition.compare_faces([encoding], user_encoding)
+        if result[0]:
+            print(user)
+            Image.fromarray(face).show()
+            Image.fromarray(user_face).show()

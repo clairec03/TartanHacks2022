@@ -7,24 +7,33 @@ import os
 import json
 import numpy as np
 
-# from website.partygram.main.views import upload
-
-# Create your models here.
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    pfp = models.ImageField(upload_to = "uploads/pictures/", default=None)
+    avatar = models.ImageField(default=None)
 
 
-class Encoding(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    serialized_encoding = models.JSONField()
+class Identification(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    encoding = models.JSONField()
 
-    def get_numpy_array(self):
-        return np.array(json.loads(self.serialized_encoding))
+    def getEncoding(self):
+        return np.array(json.loads(self.encoding))
 
 
-class Image(models.Model):
-    image_file = models.ImageField(upload_to = 'uploads/images')
-    people = models.ManyToManyField(Profile)
+class Moment(models.Model):
+    picture = models.ImageField(default=None)
+
+
+class Face(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    moment = models.ForeignKey(Moment, on_delete=models.CASCADE)
+    location = models.JSONField()
+    landmark = models.JSONField()
+
+    def getLocation(self):
+        return np.array(json.loads(self.location))
+    
+    def getLandmark(self):
+        return np.array(json.loads(self.landmark))

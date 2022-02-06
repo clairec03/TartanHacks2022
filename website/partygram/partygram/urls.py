@@ -25,10 +25,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/signup', views.signup, name = "signup"),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('upload/', views.upload, name = 'upload'),
+    path('upload_moment/', views.upload_moment, name = 'upload_moment'),
     path('profile/', views.profile, name = 'profile'),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('uploadpfp', views.prof_pic_upload, name="uploadpfp")
+    path('', views.welcome, name='welcome'),
+    path('home', views.image_gallery_view, name='home'),
+    path('upload_avatar', views.upload_avatar, name='upload_avatar'),
 ] +static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # path('accounts/login', views.signup.as_view(), name = "login"),

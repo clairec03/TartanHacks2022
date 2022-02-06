@@ -1,29 +1,40 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Home{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  Please upload your pfp here:
-  <form method="post" enctype="multipart/form-data" action="{% url 'uploadpfp' %}">
-    {% csrf_token %}
-    <input type="file" name="document">
-    <button type="submit" class="btn btn-primary">Upload</button>
-  </form>
+<h1>Hi {{ user.username }}!</h1>
+  {% comment %} variable named photos, list of photo (Django image files) {% endcomment %}
+  <!-- Assume we have 3 lists of photos -->
 
-  Upload the image you wnat to share:
-  <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
-    {% csrf_token %}
-    <input type="file" name="document">
-    <button type="submit" class="btn btn-primary">Upload</button>
-  </form>
-  <p><a href="{% url 'logout' %}">Log Out</a></p>
-  {% comment %} <p><a href="{% url 'password_reset' %}">Reset Password</a></p> {% endcomment %}
+<div class="container">
+  <div class="row">
+	<!-- 	List of photos1 -->
+    <div class="col">
+      {% for photo in img1 %}
+      <img src={{STATIC_URL}}{{photo.img.url}} class="img-fluid" alt="Responsive image">
+      <br><br>
+      {% endfor %}
+    </div>
+	<!-- 	List of photos2 -->
+    <div class="col">
+      {% for photo in img2 %}
+      <img src={{STATIC_URL}}{{photo.img.url}} class="img-fluid" alt="Responsive image">
+      <br><br>
+      {% endfor %}
+    </div>
+	<!-- 	List of photos3 -->
+    <div class="col">
+      {% for photo in img3 %}
+      <img src={{STATIC_URL}}{{photo.img.url}} class="img-fluid" alt="Responsive image">
+      <br><br>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">Log In</a>
-  <br>
-  <a href="{% url 'signup' %}">Sign Up</a>
+  <p>your are not logged in</p>
 {% endif %}
 {% endblock %}

@@ -1,4 +1,4 @@
-import encodings
+from multiprocessing import dummy
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
@@ -7,126 +7,134 @@ from django.views.generic import TemplateView, ListView, CreateView
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-import face_recognition
-from main.models import Profile, Encoding, Image
+from main.models import Profile, Identification, Moment, Face
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 import numpy as np
 import json, logging
 from django.conf import settings
 import os
+from face_recognition import load_image_file, face_locations, face_landmarks, face_encodings, compare_faces, face_distance
+
+
 def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            user.is_admin = True
-            new_profile = Profile(user=user)
-            new_profile.save()
-            login(request, user)
-            return redirect('home') 
-    else:
+    if request.method != "POST":
         form = UserCreationForm()
-    return render(request, 'registration/signup.html', {'form': form})
-    # form_class = UserCreationForm
-    # success_url = reverse_lazy('login')
-    # template_name = 'registration/signup.html'
+        return render(request, 'registration/signup.html', {'form': form})
+
+    form = UserCreationForm(request.POST)
+    if not form.is_valid():
+        return render(request, 'registration/signup.html', {'form': form})
+
+    form.save()
+    username = form.cleaned_data.get('username')
+    password = form.cleaned_data.get('password1')
+    user = authenticate(username=username, password=password)
+    profile = Profile(user=user)
+    profile.save()
+    login(request, user)
+    return redirect('home') 
+
+@login_required
+def upload_avatar(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    profile.avatar = request.FILES['document']
+    profile.save()
+    return render(request, "profile.html", {"profile": profile})
 
 @login_required
 def profile(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    return render(request, 'profile.html', {"profile": profile})
+
+@login_required
+def upload_identification(request):
+    if request.method != "POST":
+        return render(request, 'home.html', {})
+    
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    temp_path = request.FILES["documents"]
+    temp = load_image_file(temp_path)
+    encoding = face_encodings(temp, num_jitters=10, model="large")
+    identification = Identification(profile=profile, encoding=nparrayToJSON(encoding))
+    identification.save()
+
+    return redirect("home")
+
+    # logging.warning(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".." + profile.pfp.url))
+    # npencoding = get_encoding(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".." + profile.pfp.url))
+    
+@login_required
+def upload_moment(request):
+    if request.method != "POST":
+        return render(request, 'upload_moment.html')
+
+    picture_path = request.FILES['document']
+    picture = load_image_file(picture_path)
+    moment = Moment(picture=picture)
+    moment.save()
+
+    locations = face_locations(picture, number_of_times_to_upsample=1, model="cnn")
+    landmarks = face_landmarks(picture, locations, model="large")
+    encodings = face_encodings(picture, locations, num_jitters=5, model="large")
+    assert len(locations) == len(landmarks) == len(encodings)
+
+    profiles = []
+    encodings = []
+    for identification in Identification.objects.all():
+        profiles.append(identification.profile)
+        encodings.append(identification.getEncoding())
+    
+    for location, landmark, encoding in zip(locations, landmarks, encodings):
+        matches = compare_faces(encodings, encoding)
+        distances = face_distance(encodings, encoding)
+        index = np.argmin(distances)
+
+        if not matches[index]:
+            dummy = User.objects.get(username = "dummy")
+            profile[index] = Profile.objects.get(user = dummy)
+        else:
+            face = Face(
+                profile=profiles[index],
+                moment=moment,
+                location=nparrayToJSON(location),
+                landmark=nparrayToJSON(landmark))
+            face.save()
+
+    return render(request, 'home.html', {})
+
+@login_required
+def image_gallery_view(request):
     user_m = request.user
-    print(user_m)
     user_prof = Profile.objects.get(user=user_m)
-    return render(request, 'profile.html', {'userprof':user_prof})
+    img1 = []
+    img2 = []
+    img3 = []
+    all_faces = user_prof.face_set.all()
+    all_img = []
+    for face in all_faces:
+        all_img.append(face.moment)
+    print(len(all_faces))
+    # split moment into 3 lists
+    index = 0
+    for mom in all_img:
+        if index % 3 == 0:
+            img1.append(mom)
+        elif index % 3 == 1:
+            img2.append(mom)
+        else:
+            img3.append(mom)
+        index += 1
+    return render(request, 'home.html', {'img1':img1, 'img2':img2, 'img3':img3})
 
-@login_required
-def upload(request):
-    context = {}
-    if request.method == 'POST':
-        uploaded_file = request.FILES['document']
-        image_upload(uploaded_file)
-    return render(request, 'home.html', context)
+def welcome(request):
+    if(request.user.is_authenticated):
+        return render(request, 'home.html')
+    else:
+        return render(request, 'welcome.html')
 
-@login_required
-def prof_pic_upload(request):
-    user_m = request.user
-    context = {}
-    if request.method == 'POST':
-        uploaded_file = request.FILES['document']
-        profile = Profile.objects.get(user=user_m)
-        profile.pfp = uploaded_file
-        profile.save()
-        logging.warning(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".." + profile.pfp.url))
-        npencoding = get_encoding(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".." + profile.pfp.url))
-        json_encoding = json.dumps(npencoding.tolist())
-        encoding = Encoding(user = profile, serialized_encoding=json_encoding)
-        encoding.save()
-
-
-    return render(request, 'home.html', context)
-
-
-def image_upload(image_file):
-    picture = face_recognition.load_image_file(image_file)
-    face_locations = face_recognition.face_locations(
-            picture,
-            number_of_times_to_upsample=1
-    )
-
-    image = Image(image_file = image_file)
-    image.save()
-
-    for face_location in face_locations:
-        top, right, bottom, left = face_location
-        face = picture[top:bottom, left:right]
-        encoding = face_recognition.face_encodings(face)
-        if len(encoding) == 0:
-            continue
-        encoding = encoding[0]
-
-        #  Image.fromarray(face).show()
-        profiles = Profile.objects.all()
-        
-        for profile in profiles:
-            user_encodings = Encoding.objects.filter(user=profile)
-            if len(user_encodings) == 0:
-                continue
-            user_encoding = user_encodings[0].get_numpy_array()
-            result = face_recognition.compare_faces([encoding], user_encoding)
-            if result[0]:
-                image.people.add(profile)
-                logging.warning(profile.user.username)
-                # Image.fromarray(face).show()
-                # Image.fromarray(user_face).show()
-    
-    
-    image.save()
-
-# def get_encoding(img_url):
-#     picture = face_recognition.load_image_file(img_url)
-#     logging.warning("read picture done")
-#     face_location = face_recognition.face_locations(
-#             picture,
-#             number_of_times_to_upsample=1,
-#             model="cnn"
-#     )[0]
-#     top, right, bottom, left = face_location
-#     face = picture[top:bottom, left:right]
-#     encoding = face_recognition.face_encodings(face)
-#     logging.warning(encoding)
-#     if len(encoding) <= 0:
-#         return None
-#     else:
-#         return encoding[0]
-
-def get_encoding(picture_path):
-    picture = face_recognition.load_image_file(picture_path)
-    encoding = face_recognition.face_encodings(picture, num_jitters=5, model="large")
-    if len(encoding) == 0:
-        logging.error("NI MA ZHA LE")
-    if len(encoding) > 1:
-        logging.error("NI MAMA ZHA LE")
-    return encoding[0]
+def nparrayToJSON(nparray):
+    return json.dumps(nparray.tolist())

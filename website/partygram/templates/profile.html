@@ -7,12 +7,31 @@
 {% if user.is_authenticated %}
     <div class="container">
         <div class = "row mt-5">
+            {% if profile.avatar %}
+            <div class="col-4">
+                <h1>{{user.username}}</h1>
+                <form method="post" enctype="multipart/form-data" action="{% url 'upload_avatar' %}">
+                    {% csrf_token %}
+                    <input type="file" name="document">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                  </form>
+            </div>
+            <div class="col-8">
+                <img src="{{STATIC_URL}}{{profile.avatar.url}}" style="max-width:100%;max-height:100%;" alt="">
+            </div>
+            {% else %}
             <div class="col-4">
                 <h1>{{user.username}}</h1>
             </div>
             <div class="col-8">
-                <img src="{{STATIC_URL}}{{userprof.pfp.url}}" alt="">
+                <form method="post" enctype="multipart/form-data" action="{% url 'upload_avatar' %}">
+                    {% csrf_token %}
+                    <input type="file" name="document">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                  </form>
             </div>
+            {% endif %}
+            
         </div>
     </div>
 {% endif %}

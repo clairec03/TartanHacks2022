@@ -1,0 +1,16 @@
+{% comment %} Hi {{ user.username }}!
+  Please upload your pfp here:
+  <form method="post" enctype="multipart/form-data" action="{% url 'upload_avatar' %}">
+    {% csrf_token %}
+    <input type="file" name="document">
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+
+  Upload the image you want to share:
+  <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
+    {% csrf_token %}
+    <input type="file" name="document">
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+  <p><a href="{% url 'logout' %}">Log Out</a></p> {% endcomment %}
+  {% comment %} <p><a href="{% url 'password_reset' %}">Reset Password</a></p> {% endcomment %}

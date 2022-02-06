@@ -1,15 +1,15 @@
 from django.contrib import admin
-from main.models import Profile, Encoding, Image
+from main.models import Profile, Identification, Moment
 # Register your models here.
 class ProfileAdmin(admin.ModelAdmin):
-      list_display    = ['user', 'id', 'pfp']
+      list_display    = ['user', 'id', 'avatar']
 
-class EncodingAdmin(admin.ModelAdmin):
-      list_display    = ['user',  'serialized_encoding']
+class IdentificationAdmin(admin.ModelAdmin):
+      list_display    = ['profile',  'encoding']
 
-class ImageAdmin(admin.ModelAdmin):
-      list_display    = ['image_file']
+class MomentAdmin(admin.ModelAdmin):
+      list_display    = ['picture']
 
 admin.site.register(Profile, ProfileAdmin)
-admin.site.register(Encoding, EncodingAdmin)
-admin.site.register(Image, ImageAdmin)
+admin.site.register(Identification, IdentificationAdmin)
+admin.site.register(Moment, MomentAdmin)

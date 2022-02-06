@@ -1,30 +1,33 @@
-{% url 'home' as home_url %}
-{% url 'upload' as upload_url %}
+{% url 'welcome' as welcome_url %}
+{% url 'upload_moment' as upload_url %}
 {% url 'profile' as profile_url %}
+{% load static %}
 
-  <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+  <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e5e5e5;">
       <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home'%}">SnapSync</a>
+    <a class="navbar-brand" href="{% url 'welcome'%}"><div class="logo-image">
+      <img src="{%static 'logo/banner.png'%}" class="img-fluid" alt="Logo-image" width="75">
+    </div></a>
       <ul class="navbar-nav me-auto">
-        <li class="nav-item {% if request.path == home_url %} active {%endif%}">
-          <a class="nav-link " href="{% url 'home'%}">Home <span class="sr-only">(current)</span></a>
+        <li class="nav-item {% if request.path == welcome_url %} active {%endif%}">
+          <a class="nav-link " href="{% url 'welcome'%}">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item {% if request.path == upload_url%} active {%endif%}">
-            <a class="nav-link " href="{% url 'upload'%}">Upload</a>
+            <a class="nav-link " href="{% url 'upload_moment' %}">Upload</a>
         </li>
       </ul>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item {% if request.path == profile_url%} active {%endif%}">
             <a class="nav-link " href="{% url 'profile'%}">Profile</a>
         </li>
-        <li class="nav-item ">
+        <li class="nav-item">
             {% if user.is_authenticated %} 
-            <form method="post"  action="{% url 'logout' %}">
+            <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button class="btn btn-light">Log Out</button>
               </form>
             {% else %}
-            <form method="post"  action="{% url 'login' %}">
+            <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
                 <button class="btn btn-light">Log In</button>
               </form>
@@ -33,4 +36,3 @@
     </ul>
 </div>
   </nav>
-

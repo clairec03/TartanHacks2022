@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class=""></div>
+<form method="post" enctype="multipart/form-data" action="{% url 'upload_moment' %}">
+  {% csrf_token %}
+  <input type="file" name="document">
+  <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+{% endblock %}

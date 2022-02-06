@@ -72,14 +72,19 @@ def upload_moment(request):
     if request.method != "POST":
         return render(request, 'upload_moment.html')
 
-    picture_path = request.FILES['document']
-    picture = load_image_file(picture_path)
-    moment = Moment(picture=picture)
+    moment = Moment(picture=request.FILES["document"])
     moment.save()
 
+    picture_path = request.FILES['document']
+    picture = load_image_file(picture_path)
+
+    logging.warning("asdfdfjklasdj")
     locations = face_locations(picture, number_of_times_to_upsample=1, model="cnn")
+    logging.warning("asklasdj")
     landmarks = face_landmarks(picture, locations, model="large")
+    logging.warning("jkasdfjklasdj")
     encodings = face_encodings(picture, locations, num_jitters=5, model="large")
+    logging.warning("kasdfjklasdj")
     assert len(locations) == len(landmarks) == len(encodings)
 
     profiles = []
@@ -87,8 +92,10 @@ def upload_moment(request):
     for identification in Identification.objects.all():
         profiles.append(identification.profile)
         encodings.append(identification.getEncoding())
+    logging.warning("kdj")
     
     for location, landmark, encoding in zip(locations, landmarks, encodings):
+        logging.warning("count")
         matches = compare_faces(encodings, encoding)
         distances = face_distance(encodings, encoding)
         index = np.argmin(distances)

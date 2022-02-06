@@ -6,7 +6,7 @@
   <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e5e5e5;">
       <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'welcome'%}"><div class="logo-image">
-      <img src="{%static 'logo/banner.png'%}" class="img-fluid" alt="Logo-image" width="75">
+      <img src="{%static 'logo/banner.png'%}" class="img-fluid" alt="Logo-image" width="100">
     </div></a>
       <ul class="navbar-nav me-auto">
         <li class="nav-item {% if request.path == welcome_url %} active {%endif%}">

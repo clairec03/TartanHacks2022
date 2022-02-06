@@ -3,7 +3,7 @@
 
 **Team: Radishes for Hunan**
 
-**Contributors: Cindy Zhu, Daniel Chen, Charlotte Wang, Claire Chen**
+**Contributors: Cindy Zhu, Siyuan Chen, Charlotte Wang, Claire Chen**
 
 SnapSync is a dynamic web-based community photo sharing app that enables users to upload and share photos with ease, automatically connecting with other users whose faces also appear in the photos. 
 

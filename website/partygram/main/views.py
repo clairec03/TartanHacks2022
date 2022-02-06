@@ -16,24 +16,46 @@ from django.conf import settings
 import os
 from face_recognition import load_image_file, face_locations, face_landmarks, face_encodings, compare_faces, face_distance
 
+def home(request):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect("welcome")
+    profile = Profile.objects.get(user=user)
+    momentss = [[], [], []]
+    faces = profile.face_set.all()
+    for index, face in enumerate(faces):
+        momentss[index % 3].append(face.moment)
+    return render(request, 'home.html', {'momentss': momentss})
+
+def welcome(request):
+    return render(request, 'welcome.html')
 
 def signup(request):
     if request.method != "POST":
         form = UserCreationForm()
         return render(request, 'registration/signup.html', {'form': form})
-
     form = UserCreationForm(request.POST)
+
     if not form.is_valid():
         return render(request, 'registration/signup.html', {'form': form})
-
     form.save()
+
     username = form.cleaned_data.get('username')
     password = form.cleaned_data.get('password1')
-    user = authenticate(username=username, password=password)
+    user = authenticate(
+        username=username,
+        password=password
+        )
     profile = Profile(user=user)
     profile.save()
     login(request, user)
     return redirect('home') 
+
+@login_required
+def profile(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    return render(request, 'profile.html', {"profile": profile})
 
 @login_required
 def upload_avatar(request):
@@ -44,29 +66,22 @@ def upload_avatar(request):
     return render(request, "profile.html", {"profile": profile})
 
 @login_required
-def profile(request):
-    user = request.user
-    profile = Profile.objects.get(user=user)
-    return render(request, 'profile.html', {"profile": profile})
-
-@login_required
 def upload_identification(request):
     if request.method != "POST":
         return render(request, 'home.html', {})
-    
+
     user = request.user
     profile = Profile.objects.get(user=user)
-    temp_path = request.FILES["documents"]
+    temp_path = request.FILES["document"]
     temp = load_image_file(temp_path)
-    encoding = face_encodings(temp, num_jitters=10, model="large")
-    identification = Identification(profile=profile, encoding=nparrayToJSON(encoding))
+    encoding = face_encodings(temp, num_jitters=10, model="large")[0]
+    identification = Identification(
+        profile=profile,
+        encoding=json.dumps(encoding.tolist())
+        )
     identification.save()
-
     return redirect("home")
 
-    # logging.warning(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".." + profile.pfp.url))
-    # npencoding = get_encoding(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".." + profile.pfp.url))
-    
 @login_required
 def upload_moment(request):
     if request.method != "POST":
@@ -78,70 +93,44 @@ def upload_moment(request):
     picture_path = request.FILES['document']
     picture = load_image_file(picture_path)
 
-    logging.warning("asdfdfjklasdj")
-    locations = face_locations(picture, number_of_times_to_upsample=1, model="cnn")
-    logging.warning("asklasdj")
+    locations = face_locations(picture, number_of_times_to_upsample=2, model="hog")
     landmarks = face_landmarks(picture, locations, model="large")
-    logging.warning("jkasdfjklasdj")
-    encodings = face_encodings(picture, locations, num_jitters=5, model="large")
-    logging.warning("kasdfjklasdj")
+    encodings = face_encodings(picture, locations, num_jitters=10, model="large")
     assert len(locations) == len(landmarks) == len(encodings)
 
-    profiles = []
-    encodings = []
-    for identification in Identification.objects.all():
-        profiles.append(identification.profile)
-        encodings.append(identification.getEncoding())
-    logging.warning("kdj")
+    dummy_index = -1
+    id_profiles = []
+    id_encodings = []
+    for index, identification in enumerate(Identification.objects.all()):
+        if identification.profile.user.username == "dummy":
+            dummy_index = index
+        id_profiles.append(identification.profile)
+        id_encodings.append(identification.getEncoding())
+    assert dummy_index != -1
+
+    logging.warning(len(locations))
     
     for location, landmark, encoding in zip(locations, landmarks, encodings):
-        logging.warning("count")
-        matches = compare_faces(encodings, encoding)
-        distances = face_distance(encodings, encoding)
+        logging.warning("iteration")
+        matches = compare_faces(id_encodings, encoding)
+        distances = face_distance(id_encodings, encoding)
         index = np.argmin(distances)
 
         if not matches[index]:
-            dummy = User.objects.get(username = "dummy")
-            profile[index] = Profile.objects.get(user = dummy)
+            face = Face(
+                profile=id_profiles[dummy_index],
+                moment=moment,
+                location=json.dumps(location),
+                landmark=json.dumps(landmark)
+            )
+            face.save()
         else:
             face = Face(
-                profile=profiles[index],
+                profile=id_profiles[index],
                 moment=moment,
-                location=nparrayToJSON(location),
-                landmark=nparrayToJSON(landmark))
+                location=json.dumps(location),
+                landmark=json.dumps(landmark)
+                )
             face.save()
 
-    return render(request, 'home.html', {})
-
-@login_required
-def image_gallery_view(request):
-    user_m = request.user
-    user_prof = Profile.objects.get(user=user_m)
-    img1 = []
-    img2 = []
-    img3 = []
-    all_faces = user_prof.face_set.all()
-    all_img = []
-    for face in all_faces:
-        all_img.append(face.moment)
-    print(len(all_faces))
-    # split moment into 3 lists
-    index = 0
-    for mom in all_img:
-        if index % 3 == 0:
-            img1.append(mom)
-        elif index % 3 == 1:
-            img2.append(mom)
-        else:
-            img3.append(mom)
-        index += 1
-    return render(request, 'home.html', {'img1':img1, 'img2':img2, 'img3':img3})
-
-def welcome(request):
-    if(request.user.is_authenticated):
-        return render(request, 'home.html')
-    else:
-        return render(request, 'welcome.html')
-
-def nparrayToJSON(nparray):
-    return json.dumps(nparray.tolist())
+    return redirect("home")

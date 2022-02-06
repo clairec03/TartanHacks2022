@@ -3,11 +3,11 @@
 {% load static %}
 
 {% block content %}
-<div class=""></div>
-<form method="post" enctype="multipart/form-data" action="{% url 'upload_moment' %}">
-  {% csrf_token %}
-  <input type="file" name="document">
-  <button type="submit" class="btn btn-primary">Upload</button>
-</form>
-
+<div class="container pt-5">
+  <form method="post" enctype="multipart/form-data" action="{% url 'upload_moment' %}" style="text-align: center;">
+    {% csrf_token %}
+    <input type="file" name="document">
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+</div>
 {% endblock %}

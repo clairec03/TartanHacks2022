@@ -33,7 +33,7 @@ class Face(models.Model):
     landmark = models.JSONField()
 
     def getLocation(self):
-        return np.array(json.loads(self.location))
+        return json.loads(self.location)
     
     def getLandmark(self):
-        return np.array(json.loads(self.landmark))
+        return json.loads(self.landmark)

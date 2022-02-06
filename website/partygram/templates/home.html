@@ -1,40 +1,25 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Home{% endblock %}
+{% block title %}Gallery{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
-<h1>Hi {{ user.username }}!</h1>
-  {% comment %} variable named photos, list of photo (Django image files) {% endcomment %}
-  <!-- Assume we have 3 lists of photos -->
-
-<div class="container">
+<div class="container pt-5">
   <div class="row">
-	<!-- 	List of photos1 -->
-    <div class="col">
-      {% for photo in img1 %}
-      <img src={{STATIC_URL}}{{photo.img.url}} class="img-fluid" alt="Responsive image">
+	<!-- 	List of moments -->
+  {% for moments in momentss %}
+  <div class="col">
+    {% for moment in moments %}
+      <img src="{{STATIC_URL}}{{moment.picture.url}}" class="img-fluid" alt="Responsive image">
       <br><br>
-      {% endfor %}
-    </div>
-	<!-- 	List of photos2 -->
-    <div class="col">
-      {% for photo in img2 %}
-      <img src={{STATIC_URL}}{{photo.img.url}} class="img-fluid" alt="Responsive image">
-      <br><br>
-      {% endfor %}
-    </div>
-	<!-- 	List of photos3 -->
-    <div class="col">
-      {% for photo in img3 %}
-      <img src={{STATIC_URL}}{{photo.img.url}} class="img-fluid" alt="Responsive image">
-      <br><br>
-      {% endfor %}
-    </div>
+    {% endfor %}
   </div>
+  {% endfor %}
+  </div>  
 </div>
-
 {% else %}
-  <p>your are not logged in</p>
+<div class="container pt-5">
+  <p>you're are not logged in</p>
+</div>
 {% endif %}
 {% endblock %}

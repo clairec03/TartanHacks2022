@@ -23,14 +23,12 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/signup', views.signup, name = "signup"),
+    path('', views.home, name='home'),
+    path('welcome', views.welcome, name='welcome'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('upload_moment/', views.upload_moment, name = 'upload_moment'),
+    path('accounts/signup', views.signup, name = "signup"),
     path('profile/', views.profile, name = 'profile'),
-    path('', views.welcome, name='welcome'),
-    path('home', views.image_gallery_view, name='home'),
     path('upload_avatar', views.upload_avatar, name='upload_avatar'),
-] +static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# path('accounts/login', views.signup.as_view(), name = "login"),
-# urlpatterns += staticfiles_urlpatterns()  
+    path('upload_identification', views.upload_identification, name="upload_identification"),
+    path('upload_moment/', views.upload_moment, name = 'upload_moment')
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

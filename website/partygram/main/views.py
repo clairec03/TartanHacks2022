@@ -95,8 +95,11 @@ def upload_moment(request):
     moment = Moment(picture=picture_path)
     moment.save()
 
-    locations = face_locations(picture, number_of_times_to_upsample=1, model="cnn")
+    logging.warning("LOCATION")
+    locations = face_locations(picture, number_of_times_to_upsample=1, model="hog")
+    logging.warning("LANDMARK")
     landmarks = face_landmarks(picture, locations, model="large")
+    logging.warning("ENCODING")
     encodings = face_encodings(picture, locations, num_jitters=1, model="large")
     assert len(locations) == len(landmarks) == len(encodings)
 
@@ -109,9 +112,11 @@ def upload_moment(request):
         k_profiles.append(identification.profile)
         k_encodings.append(identification.getEncoding())
     assert dummy_index != -1
+    logging.warning("K")
 
     with Image.open(picture_path) as image:
         for location, landmark, encoding in zip(locations, landmarks, encodings):
+            logging.warning("ITERA")
             matches = compare_faces(k_encodings, encoding)
             distances = face_distance(k_encodings, encoding)
             index = np.argmin(distances)
@@ -123,7 +128,8 @@ def upload_moment(request):
             )
             face.save()
 
-            top, right, left, bottom = location
+            logging.warning("ITERB")
+            top, right, bottom, left = location
             mid = left + (right - left) / 2
             draw = ImageDraw.Draw(image, "RGBA")
             draw.polygon(
@@ -132,27 +138,13 @@ def upload_moment(request):
                 )
             draw.text(
                 (mid, bottom),
-                k_profiles[index].user.username,
+                k_profiles[index if matches[index] else dummy_index].user.username,
                 anchor="ma",
                 fill=(0, 255, 0, 255)
                 )
         logging.warning("saving")
-
-        # image - PIL IMAGE
-        # img_io = StringIO.StringIO()
-        # image.save()
-        # def cropper(original_image, crop_coords):
-        #     img_io = StringIO.StringIO()
-        #     original_image = Image.open(original_image)
-        #     cropped_img = original_image.crop((0, 0, 165, 165))
-        #     cropped_img.save(img_io, format='JPEG', quality=100)
-        #     img_content = ContentFile(img_io.getvalue(), 'img5.jpg')
-        #     return img_content
-    
         blob = BytesIO()
         image.save(blob, format="JPEG")
-
-        # want to be used here
         tagged = Tagged(
             moment=moment,
             picture=ContentFile(blob.getvalue(), "tagged.jpg")

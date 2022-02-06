@@ -11,6 +11,10 @@ Sometimes, we take group pictures while attending events, but forget to share an
 
 Simply upload the pictures to SnapSync, enter the event name, and SnapSync’s AI-empowered facial recognition and tagging algorithm would compute encodings to match faces with other users registered in the SnapSync network. Event attendees featured in shared photos would receive notifications, allowing them to access their own images and connect with one another.
 
+Video:
+
+
+
 Presentation:
 
 https://docs.google.com/presentation/d/1Tb-CS9EzElkcxWvoJkkmjX_SyLYPr-pLzwcQoHRpbnc/edit?usp=sharing

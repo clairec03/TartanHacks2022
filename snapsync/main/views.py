@@ -107,7 +107,7 @@ def upload_moment(request):
     k_profiles = []
     k_encodings = []
     for index, identification in enumerate(Identification.objects.all()):
-        if identification.profile.user.username == "dummy":
+        if identification.profile.user.username == "Random_Scotty":
             dummy_index = index
         k_profiles.append(identification.profile)
         k_encodings.append(identification.getEncoding())
@@ -146,7 +146,7 @@ def upload_moment(request):
                 )
         logging.warning("saving")
         blob = BytesIO()
-        image.save(blob, format="JPEG")
+        image.save(blob, format="PNG")
         tagged = Tagged(
             moment=moment,
             picture=ContentFile(blob.getvalue(), "tagged.jpg")

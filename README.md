@@ -1,3 +1,4 @@
 # TartanHacks2022
-# SnapSync
+SnapSync
+
 https://docs.google.com/presentation/d/1Tb-CS9EzElkcxWvoJkkmjX_SyLYPr-pLzwcQoHRpbnc/edit?usp=sharing

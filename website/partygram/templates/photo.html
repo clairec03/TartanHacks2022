@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Photo{% endblock %}
+
+{% block content %}
+<div class="container m-5 text-center" >
+    <img src="{{STATIC_URL}}{{picture.url}}" alt="Your PHOTO :D" width="80%">
+</div>
+{% endblock %}

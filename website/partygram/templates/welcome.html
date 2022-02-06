@@ -3,8 +3,25 @@
 {% load static %}
 
 {% block content %}
-  <div class="container pt-5">
-  <img src="{%static 'logo/welcome.jpg'%}" class="img-fluid" alt="Logo-image" width="100">
-  
-  </div>
+
+<div class="container ps-5 pe-5 pt-5">
+<div class="row">
+	<div class="col ps-5 pt-5 pb-2">
+      <h1 class="text-justify pt-2"> <strong>Snap, Take a Nap, & Synced!</strong></h1>
+      <div class="mt-5">
+        <h4 class="text-justify">• Increased Connectivity. </h4>
+			  <h4 class="text-justify">• Instant Photo Sharing, AI-Powered. </h4>
+			  <h4 class="text-justify">• Stress-free and Secure.</h4>
+      </div>
+      
+		
+    </div>
+
+    <div class="col me-2">
+      <img src="{%static 'logo/welcome.png'%}" alt="welcome-image" height="100%">
+    </div>
+</div>
+</div>
+<!-- Quick general walk through of how this works	 -->
+
 {% endblock %}

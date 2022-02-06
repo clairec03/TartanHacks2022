@@ -23,6 +23,12 @@ class Identification(models.Model):
 
 
 class Moment(models.Model):
+    id = models.AutoField(primary_key=True)
+    picture = models.ImageField(default=None)
+
+
+class Tagged(models.Model):
+    moment = models.OneToOneField(Moment, on_delete=models.CASCADE)
     picture = models.ImageField(default=None)
 
 

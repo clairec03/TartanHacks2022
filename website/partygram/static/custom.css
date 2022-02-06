@@ -3,3 +3,12 @@
     height: auto;
     border-radius: 5px;
 }
+
+*{
+    font-family: 'Ubuntu';
+}
+
+h1{
+    font-size: 55px !important;
+    font-weight: 900;
+}

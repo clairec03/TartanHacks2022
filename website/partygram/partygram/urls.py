@@ -27,6 +27,7 @@ urlpatterns = [
     path('welcome', views.welcome, name='welcome'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/signup', views.signup, name = "signup"),
+    path('moment/<int:id_int>', views.view_moment, name = "moment"),
     path('profile/', views.profile, name = 'profile'),
     path('upload_avatar', views.upload_avatar, name='upload_avatar'),
     path('upload_identification', views.upload_identification, name="upload_identification"),

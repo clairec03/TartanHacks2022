@@ -142,12 +142,12 @@ def upload_moment(request):
         
         '''
         def cropper(original_image, crop_coords):
-        img_io = StringIO.StringIO()
-        original_image = Image.open(original_image)
-        cropped_img = original_image.crop((0, 0, 165, 165))
-        cropped_img.save(img_io, format='JPEG', quality=100)
-        img_content = ContentFile(img_io.getvalue(), 'img5.jpg')
-        return img_content
+            img_io = StringIO.StringIO()
+            original_image = Image.open(original_image)
+            cropped_img = original_image.crop((0, 0, 165, 165))
+            cropped_img.save(img_io, format='JPEG', quality=100)
+            img_content = ContentFile(img_io.getvalue(), 'img5.jpg')
+            return img_content
         '''
     
         blob = BytesIO()

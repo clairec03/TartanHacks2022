@@ -3,9 +3,8 @@
 {% load static %}
 
 {% block content %}
-  <form method="post">
-    {% csrf_token %}
-    <input type="file" name="document">
-    <button type="submit">Sign In</button>
-  </form>
+  <div class="container pt-5">
+  <img src="{%static 'logo/welcome.jpg'%}" class="img-fluid" alt="Logo-image" width="100">
+  
+  </div>
 {% endblock %}

@@ -10,7 +10,9 @@
   {% for moments in momentss %}
   <div class="col">
     {% for moment in moments %}
+      <a href="\moment\{{moment.id}}">
       <img src="{{STATIC_URL}}{{moment.picture.url}}" class="img-fluid" alt="Responsive image">
+      </a>
       <br><br>
     {% endfor %}
   </div>

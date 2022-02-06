@@ -36,6 +36,13 @@ def signup(request):
     # template_name = 'registration/signup.html'
 
 @login_required
+def profile(request):
+    user_m = request.user
+    print(user_m)
+    user_prof = Profile.objects.get(user=user_m)
+    return render(request, 'profile.html', {'userprof':user_prof})
+
+@login_required
 def upload(request):
     context = {}
     if request.method == 'POST':
@@ -98,19 +105,28 @@ def image_upload(image_file):
     
     image.save()
 
-def get_encoding(img_url):
-    picture = face_recognition.load_image_file(img_url)
-    logging.warning("read picture done")
-    face_location = face_recognition.face_locations(
-            picture,
-            number_of_times_to_upsample=1,
-            model="cnn"
-    )[0]
-    top, right, bottom, left = face_location
-    face = picture[top:bottom, left:right]
-    encoding = face_recognition.face_encodings(face)
-    logging.warning(encoding)
-    if len(encoding) <= 0:
-        return None
-    else:
-        return encoding[0]
+# def get_encoding(img_url):
+#     picture = face_recognition.load_image_file(img_url)
+#     logging.warning("read picture done")
+#     face_location = face_recognition.face_locations(
+#             picture,
+#             number_of_times_to_upsample=1,
+#             model="cnn"
+#     )[0]
+#     top, right, bottom, left = face_location
+#     face = picture[top:bottom, left:right]
+#     encoding = face_recognition.face_encodings(face)
+#     logging.warning(encoding)
+#     if len(encoding) <= 0:
+#         return None
+#     else:
+#         return encoding[0]
+
+def get_encoding(picture_path):
+    picture = face_recognition.load_image_file(picture_path)
+    encoding = face_recognition.face_encodings(picture, num_jitters=5, model="large")
+    if len(encoding) == 0:
+        logging.error("NI MA ZHA LE")
+    if len(encoding) > 1:
+        logging.error("NI MAMA ZHA LE")
+    return encoding[0]

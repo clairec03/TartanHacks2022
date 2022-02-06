@@ -33,3 +33,7 @@ h1{
 button:hover{
     box-shadow: 0 0.7rem 2rem rgba(0, 0, 0, 0.35);
 }
+
+h4{
+    color: #274374 !important;
+}

@@ -1,4 +1,6 @@
 # TartanHacks2022
 SnapSync
 
-https://docs.google.com/presentation/d/1Tb-CS9EzElkcxWvoJkkmjX_SyLYPr-pLzwcQoHRpbnc/edit?usp=sharing
+Sources:
+https://www.geeksforgeeks.org/python-pil-image-save-method/
+https://pillow.readthedocs.io/en/stable/

@@ -13,11 +13,26 @@ Simply upload the pictures to SnapSync, enter the event name, and SnapSync’s A
 
 Video:
 
+https://youtu.be/4qh9tCiXqjI
 
 
 Presentation:
 
 https://docs.google.com/presentation/d/1Tb-CS9EzElkcxWvoJkkmjX_SyLYPr-pLzwcQoHRpbnc/edit?usp=sharing
+
+Instructions:
+
+To run the app, enter the following commands:
+
+`sudo apt install python3.8`
+
+`pip install face_recognition`
+
+`python -m pip install Django`
+
+`cd snapsync`
+
+`python3 manage.py runserver`
 
 
 Sources:

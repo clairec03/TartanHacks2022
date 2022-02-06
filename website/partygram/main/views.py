@@ -120,8 +120,10 @@ def upload_moment(request):
             matches = compare_faces(k_encodings, encoding)
             distances = face_distance(k_encodings, encoding)
             index = np.argmin(distances)
+            if not matches[index]:
+                index = dummy_index
             face = Face(
-                profile=k_profiles[index if matches[index] else dummy_index],
+                profile=k_profiles[index],
                 moment=moment,
                 location=json.dumps(location),
                 landmark=json.dumps(landmark)
@@ -138,7 +140,7 @@ def upload_moment(request):
                 )
             draw.text(
                 (mid, bottom),
-                k_profiles[index if matches[index] else dummy_index].user.username,
+                k_profiles[index].user.username,
                 anchor="ma",
                 fill=(0, 255, 0, 255)
                 )

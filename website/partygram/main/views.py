@@ -95,9 +95,9 @@ def upload_moment(request):
     moment = Moment(picture=picture_path)
     moment.save()
 
-    locations = face_locations(picture, number_of_times_to_upsample=2, model="hog")
+    locations = face_locations(picture, number_of_times_to_upsample=1, model="cnn")
     landmarks = face_landmarks(picture, locations, model="large")
-    encodings = face_encodings(picture, locations, num_jitters=5, model="large")
+    encodings = face_encodings(picture, locations, num_jitters=1, model="large")
     assert len(locations) == len(landmarks) == len(encodings)
 
     dummy_index = -1
@@ -139,25 +139,23 @@ def upload_moment(request):
         logging.warning("saving")
 
         # image - PIL IMAGE
-        
-        '''
-        def cropper(original_image, crop_coords):
-            img_io = StringIO.StringIO()
-            original_image = Image.open(original_image)
-            cropped_img = original_image.crop((0, 0, 165, 165))
-            cropped_img.save(img_io, format='JPEG', quality=100)
-            img_content = ContentFile(img_io.getvalue(), 'img5.jpg')
-            return img_content
-        '''
+        # img_io = StringIO.StringIO()
+        # image.save()
+        # def cropper(original_image, crop_coords):
+        #     img_io = StringIO.StringIO()
+        #     original_image = Image.open(original_image)
+        #     cropped_img = original_image.crop((0, 0, 165, 165))
+        #     cropped_img.save(img_io, format='JPEG', quality=100)
+        #     img_content = ContentFile(img_io.getvalue(), 'img5.jpg')
+        #     return img_content
     
         blob = BytesIO()
         image.save(blob, format="JPEG")
-        logging.warning(blob.getvalue())
 
         # want to be used here
         tagged = Tagged(
             moment=moment,
-            picture=ContentFile(blob.getvalue())
+            picture=ContentFile(blob.getvalue(), "tagged.jpg")
             )
         tagged.save()
         logging.warning("saved")
